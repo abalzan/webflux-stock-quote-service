@@ -21,7 +21,7 @@ public class QuoteHandler {
 		this.quoteGeneratorService = quoteGeneratorService;
 	}
 
-	public Mono<ServerResponse> fetchQuote(ServerRequest request) {
+	public Mono<ServerResponse> fetchQuotes(ServerRequest request) {
 		int size = Integer.parseInt(request.queryParam("size").orElse("10"));
 
 		return ServerResponse.ok()
@@ -29,4 +29,9 @@ public class QuoteHandler {
 							 .body(this.quoteGeneratorService.fetchQuoteStream(Duration.ofMillis(100)).take(size), Quote.class);
 	}
 
+	public Mono<ServerResponse> streamQuotes(ServerRequest request){
+		return ServerResponse.ok()
+							 .contentType(MediaType.APPLICATION_STREAM_JSON)
+							 .body(this.quoteGeneratorService.fetchQuoteStream(Duration.ofMillis(200)), Quote.class);
+	}
 }
